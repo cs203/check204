@@ -1,0 +1,272 @@
+\maketitle
+Студент входит на сайт, используя учётную запись на github.
+При первом входе для него создаётся репозиторий
+для сохранения выполненных заданий и  результатов
+тестирования заданий. После входа студент видит свои оценки, 
+замечания преподавателя, результаты тестирования заданий.
+Использование github репозиториев для сохранения результатов
+даёт возможность преподавателю и студенту совместно работать с
+выполняемыми заданиями, преподаватель и студент могут вносить изменения в
+код, преподаватель может ставить задания перед студентом, через механизм issues, 
+отслеживать историю развития проекта.
+Описания действий при тестировании мы сохраняем 
+в репозитории в формате JSON. 
+В этой статье мы рассмотрим программу проводящую тестирование
+и сохраняющую результат тестирования в репозитории.
+Способ организации работы со студентами мы заимствовали 
+из курсе информатики университета Гарварда https://cs50.harvrad.edu.  
+Исходный код писали сами, и считаем, что всякий преподаватель
+должен сам писать код своих инструментов, а не пользоваться готовыми
+системами, например, moodle. Для написания статьи был выбран стиль
+литературного программирования. Цель этого показать, как мы 
+реализовали наши инструменты, чтобы другие преподаватели
+могли использовать наш опыт при создании своих, 
+мы считаем, что преподаватель должен сам создавать
+инструменты для автоматизации работы со студентами а не брать готовые. 
+
+\section{Анализ задания}
+Цель программы проверить работу студента и загрузить её
+вместе с результатом тестирования в репозиторий на github. 
+
+\subsection{Описание проверки}
+Описание проверки сохраняем в репозитории 
+[[https://github.com/{orgTest}/psets]].
+Например, для задний на 2021 года создаём ветку 2021,
+для каждого задания создаём в ней файл. Ниже приведён 
+пример файла [[hello.js]] .
+Структура файла:
+
+[[{ "files":["hello.js"], "output":"Hello, World!", "run": "hello.js"}]]
+Свойство files содержит список файлов, отправляемых на проверку.
+Свойство output содержит ожидаемый вывод из программы.
+Свойство run содержит имя основного файла.
+
+\subsection{Запуск программы}
+Для запуска программы переходим в терминале в каталог
+с заданием и выполняем команду, например,
+[[check204 2021/hello]]
+Аргумент -- имя ветки и название задания (имя файла без расширения).
+
+
+\section{Структура}
+<<check204.js>>=
+#!/usr/bin/env node
+<<загрузка модулей>>
+<<константы>>
+;(async function main()
+{
+	await checkArgs();
+	const psetName = process.argv[2];
+	const test = await getTask(psetName); 
+	await filesExists(test);
+	await testOutput(test);
+	if(local)
+		process.exit(0);
+	await createDir(test);
+	await cloneRepo(orgTest, psetName, test);
+})()
+<<проверка аргументов командной строки>>
+<<закачивание описания>>
+<<тестирование задания>>
+<<отправка на проверку>>
+@ 
+
+\section{Реализация}
+\subsection{Проверка аргументов}
+Если пользователь не указал ветку и название задания, 
+то выдаётся сообщение об ошибке.
+Если пользователь указал неверный адрес, то выдаётся сообщение об ошибке.
+<<проверка аргументов командной строки>>=
+
+async function checkArgs() 
+{
+	if(process.argv.length < 3 || process.argv.length > 4)
+	{
+		console.log(chalk.red(`Использование: \n 
+			check204 branch/problem \n
+			или\n
+			check204 branch/problem local\n`));
+		process.exit(1); 
+	}
+	const url2 = `https://raw.githubusercontent.com/${orgTest}/psets/${process.argv[2]}.json`;
+	const url_exists = await urlExists(url2);
+	if(!url_exists)
+	{
+		console.log(chalk.red("Неверный адрес задания"));
+		process.exit(2);
+	}
+	if(process.argv.length == 4)
+	{
+		if(process.argv[3] == 'local')
+			local = true;
+		else
+		{
+			console.log(`Испольлзование: \n
+				check204 branch/problem local\n`)
+			process.exit(2);
+		}
+	}
+		
+};
+
+@ 
+
+\subsection{Закачивание описания}
+<<закачивание описания>>=
+
+async function getTask(psetName)
+{
+	try
+	{
+	const url2 = `https://raw.githubusercontent.com/${orgTest}/psets/${psetName}.json` 
+	const res = await fetch(url2, 
+	{ 
+		headers: 
+		{ 
+			"Accept": "application/json"
+		 }
+	})
+	const res1 = await res.json();
+	return res1;
+	}catch(err)
+	{
+		console.log(err);
+	}
+};
+@ 
+
+\subsection{Тестирование программы}
+<<тестирование задания>>=
+<<проверка наличия файлов>>
+<<проверка правильности вывода из программы>>
+@ 
+
+\subsubsection{Проверка наличия файлов}
+<<проверка наличия файлов>>=
+async function filesExists(test)
+{
+	const files = await fsPromises.readdir(process.cwd());
+	for(file of test.files)
+	{
+		if(files.includes(file)) 
+		{
+			console.log(chalk.green(`Файл ${file} присутствует.`));
+			resTest += `Файл ${file} присутствует.\n`;
+		}
+				
+		else
+		{
+			console.log(chalk.red(`Файл ${file} отсутствует.`)) 
+			process.exit(1)
+		}
+
+	}
+}
+@ 
+
+\subsubsection{Тест вывода из программы}
+<<проверка правильности вывода из программы>>=
+async function testOutput(test)
+{
+	const { stdout, stderr } = await exec(`node ${test.run}`);
+	if(!stdout.localeCompare(test.output))
+	{
+		console.log(chalk.green('Вывод из программы верный'));
+		resTest +='# Вывод из программы верный\n';
+	}
+	else
+	{
+		console.log(chalk.red('Ошибка'));
+		resTest += "# Ошибка\n";
+		console.log(chalk.red('Программа выдаёт'));
+		resTest += '# Программа выдаёт\n';
+		resTest += '<pre>\n';
+		resTest += stdout.toString();
+		resTest += '</pre>\n';
+		console.log(stdout);
+		console.log(stderr);
+		console.log(chalk.red('Правильный вывод'));
+		resTest += '# Правильный вывод\n';
+		resTest += "<pre>";
+		resTest += test.output;
+		resTest += "</pre>"
+		console.log(test.output);
+		console.log(stderr);
+	}
+}
+@ 
+\subsection{Отправка на проверку}
+
+<<отправка на проверку>>=
+<<создание временного каталога>>
+<<клонирование каталога>>
+@ 
+
+\subsubsection{Создание временного каталога}
+
+<<создание временного каталога>>=
+async function createDir(test)
+{
+	await fsPromises.rmdir('/tmp/test', {recursive: true}); 
+	console.log("Folder /tmp/test deleted");
+	await fsPromises.mkdir('/tmp/test', {recursive: true}); 
+	console.log("Folder create dir");
+}
+@ 
+
+\subsubsection{Клонирование каталога}
+<<клонирование каталога>>=
+async function cloneRepo(org, psetName, test)
+{
+	const readlineSync = require('readline-sync')
+	var username = readlineSync.question('Github username:');
+	const origin = `https://${username}@github.com/${org}/${username}`;
+	const {stdout, stderr} = await exec(`git clone ${origin} -b main /tmp/test`);
+	console.log(stdout);
+	console.log(stderr);
+	await exec(`git checkout -b ${psetName}`, {cwd:'/tmp/test'})
+	for(let file of test.files)
+	{
+		await fsPromises.copyFile(path.join(process.cwd(), file), path.join('/tmp/test', file));
+	} 
+	const fileName = `/tmp/test/${psetName.split('/')[1]}.md`;
+	console.log(fileName);
+	await fsPromises.writeFile(fileName,  resTest);
+	await exec(`git config user.name test && git config user.email test && git add . && git commit -m test`, {cwd: '/tmp/test'});
+	await exec(`git push -f ${origin} ${psetName}`, {cwd: '/tmp/test'}); 
+}
+@ 
+
+
+\subsection{Загрузка модулей}
+
+<<загрузка модулей>>=
+const path = require('path');
+const chalk = require('chalk');
+const util = require('util');
+const urlExists = util.promisify(require('url-exists'));
+const fetch = require('node-fetch');
+const fsPromises = require('fs').promises;
+const exec = util.promisify(require('child_process').exec);
+@ 
+
+
+\subsection{Задание констант}
+orgTest - имя организации в которой репозиторий 
+описания задания. orgCheck - имя организации где сохраняем 
+результат.
+<<константы>>=
+const orgTest = 'cs204';
+const orgCheck = 'cs204check';
+var resTest = '';
+var local = false;
+@ 
+
+\section{Установка в домашний каталог}
+Настроим на установку в каталог ~/npm.
+<<установка>>=
+mkdir ~/npm
+npm config prefix ~/npm
+export PATH="$HOME/npm/bin:PATH"
+@
+Последняя строчка в [[.profile]], чтобы система запускала программы.

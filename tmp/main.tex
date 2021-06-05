@@ -1,0 +1,342 @@
+\nwfilename{src/main.nw}\nwbegindocs{0}\maketitle% ===> this file was generated automatically by noweave --- better not edit it
+Студент входит на сайт, используя учётную запись на github.
+При первом входе для него создаётся репозиторий
+для сохранения выполненных заданий и  результатов
+тестирования заданий. После входа студент видит свои оценки, 
+замечания преподавателя, результаты тестирования заданий.
+Использование github репозиториев для сохранения результатов
+даёт возможность преподавателю и студенту совместно работать с
+выполняемыми заданиями, преподаватель и студент могут вносить изменения в
+код, преподаватель может ставить задания перед студентом, через механизм issues, 
+отслеживать историю развития проекта.
+Описания действий при тестировании мы сохраняем 
+в репозитории в формате JSON. 
+В этой статье мы рассмотрим программу проводящую тестирование
+и сохраняющую результат тестирования в репозитории.
+Способ организации работы со студентами мы заимствовали 
+из курсе информатики университета Гарварда https://cs50.harvrad.edu.  
+Исходный код писали сами, и считаем, что всякий преподаватель
+должен сам писать код своих инструментов, а не пользоваться готовыми
+системами, например, moodle. Для написания статьи был выбран стиль
+литературного программирования. Цель этого показать, как мы 
+реализовали наши инструменты, чтобы другие преподаватели
+могли использовать наш опыт при создании своих, 
+мы считаем, что преподаватель должен сам создавать
+инструменты для автоматизации работы со студентами а не брать готовые. 
+
+\section{Анализ задания}
+Цель программы проверить работу студента и загрузить её
+вместе с результатом тестирования в репозиторий на github. 
+
+\subsection{Описание проверки}
+Описание проверки сохраняем в репозитории 
+{\Tt{}https://github.com/{\nwlbrace}\nwlinkedidentq{orgTest}{NW17W4dw-T7QGV-1}{\nwrbrace}/psets\nwendquote}.
+Например, для задний на 2021 года создаём ветку 2021,
+для каждого задания создаём в ней файл. Ниже приведён 
+пример файла {\Tt{}hello.js\nwendquote} .
+Структура файла:
+
+{\Tt{}{\nwlbrace}\ "files":["hello.js"],\ "output":"Hello,\ World!",\ "run":\ "hello.js"{\nwrbrace}\nwendquote}
+Свойство files содержит список файлов, отправляемых на проверку.
+Свойство output содержит ожидаемый вывод из программы.
+Свойство run содержит имя основного файла.
+
+\subsection{Запуск программы}
+Для запуска программы переходим в терминале в каталог
+с заданием и выполняем команду, например,
+{\Tt{}check204\ 2021/hello\nwendquote}
+Аргумент -- имя ветки и название задания (имя файла без расширения).
+
+
+\section{Структура}
+\nwenddocs{}\nwbegincode{1}\sublabel{NW17W4dw-49Qatc-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-49Qatc-1}}}\moddef{check204.js~{\nwtagstyle{}\subpageref{NW17W4dw-49Qatc-1}}}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+#!/usr/bin/env node
+\LA{}загрузка модулей~{\nwtagstyle{}\subpageref{NW17W4dw-jXK53-1}}\RA{}
+\LA{}константы~{\nwtagstyle{}\subpageref{NW17W4dw-T7QGV-1}}\RA{}
+;(async function main()
+\{
+        await checkArgs();
+        const psetName = process.argv[2];
+        const test = await getTask(psetName); 
+        await filesExists(test);
+        await testOutput(test);
+        if(local)
+                process.exit(0);
+        await createDir(test);
+        await cloneRepo(\nwlinkedidentc{orgTest}{NW17W4dw-T7QGV-1}, psetName, test);
+\})()
+\LA{}проверка аргументов командной строки~{\nwtagstyle{}\subpageref{NW17W4dw-8iZgk-1}}\RA{}
+\LA{}закачивание описания~{\nwtagstyle{}\subpageref{NW17W4dw-3lPWHK-1}}\RA{}
+\LA{}тестирование задания~{\nwtagstyle{}\subpageref{NW17W4dw-2ZE1fx-1}}\RA{}
+\LA{}отправка на проверку~{\nwtagstyle{}\subpageref{NW17W4dw-1DWLUb-1}}\RA{}
+\nwnotused{check204.js}\nwidentuses{\\{{\nwixident{orgTest}}{orgTest}}}\nwindexuse{\nwixident{orgTest}}{orgTest}{NW17W4dw-49Qatc-1}\nwendcode{}\nwbegindocs{2}\nwdocspar
+
+\section{Реализация}
+\subsection{Проверка аргументов}
+Если пользователь не указал ветку и название задания, 
+то выдаётся сообщение об ошибке.
+Если пользователь указал неверный адрес, то выдаётся сообщение об ошибке.
+\nwenddocs{}\nwbegincode{3}\sublabel{NW17W4dw-8iZgk-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-8iZgk-1}}}\moddef{проверка аргументов командной строки~{\nwtagstyle{}\subpageref{NW17W4dw-8iZgk-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW17W4dw-49Qatc-1}}\nwenddeflinemarkup
+
+async function checkArgs() 
+\{
+        if(process.argv.length < 3 || process.argv.length > 4)
+        \{
+                console.log(\nwlinkedidentc{chalk}{NW17W4dw-jXK53-1}.red(`Использование: \\n 
+                        check204 branch/problem \\n
+                        или\\n
+                        check204 branch/problem local\\n`));
+                process.exit(1); 
+        \}
+        const url2 = `https://raw.githubusercontent.com/$\{\nwlinkedidentc{orgTest}{NW17W4dw-T7QGV-1}\}/psets/$\{process.argv[2]\}.json`;
+        const url_exists = await \nwlinkedidentc{urlExists}{NW17W4dw-jXK53-1}(url2);
+        if(!url_exists)
+        \{
+                console.log(\nwlinkedidentc{chalk}{NW17W4dw-jXK53-1}.red("Неверный адрес задания"));
+                process.exit(2);
+        \}
+        if(process.argv.length == 4)
+        \{
+                if(process.argv[3] == 'local')
+                        local = true;
+                else
+                \{
+                        console.log(`Испольлзование: \\n
+                                check204 branch/problem local\\n`)
+                        process.exit(2);
+                \}
+        \}
+                
+\};
+
+\nwused{\\{NW17W4dw-49Qatc-1}}\nwidentuses{\\{{\nwixident{chalk}}{chalk}}\\{{\nwixident{orgTest}}{orgTest}}\\{{\nwixident{urlExists}}{urlExists}}}\nwindexuse{\nwixident{chalk}}{chalk}{NW17W4dw-8iZgk-1}\nwindexuse{\nwixident{orgTest}}{orgTest}{NW17W4dw-8iZgk-1}\nwindexuse{\nwixident{urlExists}}{urlExists}{NW17W4dw-8iZgk-1}\nwendcode{}\nwbegindocs{4}\nwdocspar
+
+\subsection{Закачивание описания}
+\nwenddocs{}\nwbegincode{5}\sublabel{NW17W4dw-3lPWHK-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-3lPWHK-1}}}\moddef{закачивание описания~{\nwtagstyle{}\subpageref{NW17W4dw-3lPWHK-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW17W4dw-49Qatc-1}}\nwenddeflinemarkup
+
+async function getTask(psetName)
+\{
+        try
+        \{
+        const url2 = `https://raw.githubusercontent.com/$\{\nwlinkedidentc{orgTest}{NW17W4dw-T7QGV-1}\}/psets/$\{psetName\}.json` 
+        const res = await \nwlinkedidentc{fetch}{NW17W4dw-jXK53-1}(url2, 
+        \{ 
+                headers: 
+                \{ 
+                        "Accept": "application/json"
+                 \}
+        \})
+        const res1 = await res.json();
+        return res1;
+        \}catch(err)
+        \{
+                console.log(err);
+        \}
+\};
+\nwused{\\{NW17W4dw-49Qatc-1}}\nwidentuses{\\{{\nwixident{fetch}}{fetch}}\\{{\nwixident{orgTest}}{orgTest}}}\nwindexuse{\nwixident{fetch}}{fetch}{NW17W4dw-3lPWHK-1}\nwindexuse{\nwixident{orgTest}}{orgTest}{NW17W4dw-3lPWHK-1}\nwendcode{}\nwbegindocs{6}\nwdocspar
+
+\subsection{Тестирование программы}
+\nwenddocs{}\nwbegincode{7}\sublabel{NW17W4dw-2ZE1fx-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-2ZE1fx-1}}}\moddef{тестирование задания~{\nwtagstyle{}\subpageref{NW17W4dw-2ZE1fx-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW17W4dw-49Qatc-1}}\nwenddeflinemarkup
+\LA{}проверка наличия файлов~{\nwtagstyle{}\subpageref{NW17W4dw-9JOxD-1}}\RA{}
+\LA{}проверка правильности вывода из программы~{\nwtagstyle{}\subpageref{NW17W4dw-35pQwU-1}}\RA{}
+\nwused{\\{NW17W4dw-49Qatc-1}}\nwendcode{}\nwbegindocs{8}\nwdocspar
+
+\subsubsection{Проверка наличия файлов}
+\nwenddocs{}\nwbegincode{9}\sublabel{NW17W4dw-9JOxD-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-9JOxD-1}}}\moddef{проверка наличия файлов~{\nwtagstyle{}\subpageref{NW17W4dw-9JOxD-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW17W4dw-2ZE1fx-1}}\nwenddeflinemarkup
+async function filesExists(test)
+\{
+        const files = await \nwlinkedidentc{fsPromises}{NW17W4dw-jXK53-1}.readdir(process.cwd());
+        for(file of test.files)
+        \{
+                if(files.includes(file)) 
+                \{
+                        console.log(\nwlinkedidentc{chalk}{NW17W4dw-jXK53-1}.green(`Файл $\{file\} присутствует.`));
+                        resTest += `Файл $\{file\} присутствует.\\n`;
+                \}
+                                
+                else
+                \{
+                        console.log(\nwlinkedidentc{chalk}{NW17W4dw-jXK53-1}.red(`Файл $\{file\} отсутствует.`)) 
+                        process.exit(1)
+                \}
+
+        \}
+\}
+\nwused{\\{NW17W4dw-2ZE1fx-1}}\nwidentuses{\\{{\nwixident{chalk}}{chalk}}\\{{\nwixident{fsPromises}}{fsPromises}}}\nwindexuse{\nwixident{chalk}}{chalk}{NW17W4dw-9JOxD-1}\nwindexuse{\nwixident{fsPromises}}{fsPromises}{NW17W4dw-9JOxD-1}\nwendcode{}\nwbegindocs{10}\nwdocspar
+
+\subsubsection{Тест вывода из программы}
+\nwenddocs{}\nwbegincode{11}\sublabel{NW17W4dw-35pQwU-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-35pQwU-1}}}\moddef{проверка правильности вывода из программы~{\nwtagstyle{}\subpageref{NW17W4dw-35pQwU-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW17W4dw-2ZE1fx-1}}\nwenddeflinemarkup
+async function testOutput(test)
+\{
+        const \{ stdout, stderr \} = await \nwlinkedidentc{exec}{NW17W4dw-jXK53-1}(`node $\{test.run\}`);
+        if(!stdout.localeCompare(test.output))
+        \{
+                console.log(\nwlinkedidentc{chalk}{NW17W4dw-jXK53-1}.green('Вывод из программы верный'));
+                resTest +='# Вывод из программы верный\\n';
+        \}
+        else
+        \{
+                console.log(\nwlinkedidentc{chalk}{NW17W4dw-jXK53-1}.red('Ошибка'));
+                resTest += "# Ошибка\\n";
+                console.log(\nwlinkedidentc{chalk}{NW17W4dw-jXK53-1}.red('Программа выдаёт'));
+                resTest += '# Программа выдаёт\\n';
+                resTest += '<pre>\\n';
+                resTest += stdout.toString();
+                resTest += '</pre>\\n';
+                console.log(stdout);
+                console.log(stderr);
+                console.log(\nwlinkedidentc{chalk}{NW17W4dw-jXK53-1}.red('Правильный вывод'));
+                resTest += '# Правильный вывод\\n';
+                resTest += "<pre>";
+                resTest += test.output;
+                resTest += "</pre>"
+                console.log(test.output);
+                console.log(stderr);
+        \}
+\}
+\nwused{\\{NW17W4dw-2ZE1fx-1}}\nwidentuses{\\{{\nwixident{chalk}}{chalk}}\\{{\nwixident{exec}}{exec}}}\nwindexuse{\nwixident{chalk}}{chalk}{NW17W4dw-35pQwU-1}\nwindexuse{\nwixident{exec}}{exec}{NW17W4dw-35pQwU-1}\nwendcode{}\nwbegindocs{12}\nwdocspar
+\subsection{Отправка на проверку}
+
+\nwenddocs{}\nwbegincode{13}\sublabel{NW17W4dw-1DWLUb-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-1DWLUb-1}}}\moddef{отправка на проверку~{\nwtagstyle{}\subpageref{NW17W4dw-1DWLUb-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW17W4dw-49Qatc-1}}\nwenddeflinemarkup
+\LA{}создание временного каталога~{\nwtagstyle{}\subpageref{NW17W4dw-1dC1KU-1}}\RA{}
+\LA{}клонирование каталога~{\nwtagstyle{}\subpageref{NW17W4dw-2wOKcT-1}}\RA{}
+\nwused{\\{NW17W4dw-49Qatc-1}}\nwendcode{}\nwbegindocs{14}\nwdocspar
+
+\subsubsection{Создание временного каталога}
+
+\nwenddocs{}\nwbegincode{15}\sublabel{NW17W4dw-1dC1KU-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-1dC1KU-1}}}\moddef{создание временного каталога~{\nwtagstyle{}\subpageref{NW17W4dw-1dC1KU-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW17W4dw-1DWLUb-1}}\nwenddeflinemarkup
+async function createDir(test)
+\{
+        await \nwlinkedidentc{fsPromises}{NW17W4dw-jXK53-1}.rmdir('/tmp/test', \{recursive: true\}); 
+        console.log("Folder /tmp/test deleted");
+        await \nwlinkedidentc{fsPromises}{NW17W4dw-jXK53-1}.mkdir('/tmp/test', \{recursive: true\}); 
+        console.log("Folder create dir");
+\}
+\nwused{\\{NW17W4dw-1DWLUb-1}}\nwidentuses{\\{{\nwixident{fsPromises}}{fsPromises}}}\nwindexuse{\nwixident{fsPromises}}{fsPromises}{NW17W4dw-1dC1KU-1}\nwendcode{}\nwbegindocs{16}\nwdocspar
+
+\subsubsection{Клонирование каталога}
+\nwenddocs{}\nwbegincode{17}\sublabel{NW17W4dw-2wOKcT-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-2wOKcT-1}}}\moddef{клонирование каталога~{\nwtagstyle{}\subpageref{NW17W4dw-2wOKcT-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW17W4dw-1DWLUb-1}}\nwenddeflinemarkup
+async function cloneRepo(org, psetName, test)
+\{
+        const readlineSync = require('readline-sync')
+        var username = readlineSync.question('Github username:');
+        const origin = `https://$\{username\}@github.com/$\{org\}/$\{username\}`;
+        const \{stdout, stderr\} = await \nwlinkedidentc{exec}{NW17W4dw-jXK53-1}(`git clone $\{origin\} -b main /tmp/test`);
+        console.log(stdout);
+        console.log(stderr);
+        await \nwlinkedidentc{exec}{NW17W4dw-jXK53-1}(`git checkout -b $\{psetName\}`, \{cwd:'/tmp/test'\})
+        for(let file of test.files)
+        \{
+                await \nwlinkedidentc{fsPromises}{NW17W4dw-jXK53-1}.copyFile(\nwlinkedidentc{path}{NW17W4dw-jXK53-1}.join(process.cwd(), file), \nwlinkedidentc{path}{NW17W4dw-jXK53-1}.join('/tmp/test', file));
+        \} 
+        const fileName = `/tmp/test/$\{psetName.split('/')[1]\}.md`;
+        console.log(fileName);
+        await \nwlinkedidentc{fsPromises}{NW17W4dw-jXK53-1}.writeFile(fileName,  resTest);
+        await \nwlinkedidentc{exec}{NW17W4dw-jXK53-1}(`git config user.name test && git config user.email test && git add . && git commit -m test`, \{cwd: '/tmp/test'\});
+        await \nwlinkedidentc{exec}{NW17W4dw-jXK53-1}(`git push -f $\{origin\} $\{psetName\}`, \{cwd: '/tmp/test'\}); 
+\}
+\nwused{\\{NW17W4dw-1DWLUb-1}}\nwidentuses{\\{{\nwixident{exec}}{exec}}\\{{\nwixident{fsPromises}}{fsPromises}}\\{{\nwixident{path}}{path}}}\nwindexuse{\nwixident{exec}}{exec}{NW17W4dw-2wOKcT-1}\nwindexuse{\nwixident{fsPromises}}{fsPromises}{NW17W4dw-2wOKcT-1}\nwindexuse{\nwixident{path}}{path}{NW17W4dw-2wOKcT-1}\nwendcode{}\nwbegindocs{18}\nwdocspar
+
+
+\subsection{Загрузка модулей}
+
+\nwenddocs{}\nwbegincode{19}\sublabel{NW17W4dw-jXK53-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-jXK53-1}}}\moddef{загрузка модулей~{\nwtagstyle{}\subpageref{NW17W4dw-jXK53-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW17W4dw-49Qatc-1}}\nwenddeflinemarkup
+const \nwlinkedidentc{path}{NW17W4dw-jXK53-1} = require('path');\nwindexdefn{\nwixident{path}}{path}{NW17W4dw-jXK53-1}
+const \nwlinkedidentc{chalk}{NW17W4dw-jXK53-1} = require('chalk');\nwindexdefn{\nwixident{chalk}}{chalk}{NW17W4dw-jXK53-1}
+const \nwlinkedidentc{util}{NW17W4dw-jXK53-1} = require('util');\nwindexdefn{\nwixident{util}}{util}{NW17W4dw-jXK53-1}
+const \nwlinkedidentc{urlExists}{NW17W4dw-jXK53-1} = \nwlinkedidentc{util}{NW17W4dw-jXK53-1}.promisify(require('url-exists'));\nwindexdefn{\nwixident{urlExists}}{urlExists}{NW17W4dw-jXK53-1}
+const \nwlinkedidentc{fetch}{NW17W4dw-jXK53-1} = require('node-fetch');\nwindexdefn{\nwixident{fetch}}{fetch}{NW17W4dw-jXK53-1}
+const \nwlinkedidentc{fsPromises}{NW17W4dw-jXK53-1} = require('fs').promises;\nwindexdefn{\nwixident{fsPromises}}{fsPromises}{NW17W4dw-jXK53-1}
+const \nwlinkedidentc{exec}{NW17W4dw-jXK53-1} = \nwlinkedidentc{util}{NW17W4dw-jXK53-1}.promisify(require('child_process').\nwlinkedidentc{exec}{NW17W4dw-jXK53-1});\nwindexdefn{\nwixident{exec}}{exec}{NW17W4dw-jXK53-1}
+\nwused{\\{NW17W4dw-49Qatc-1}}\nwidentdefs{\\{{\nwixident{chalk}}{chalk}}\\{{\nwixident{exec}}{exec}}\\{{\nwixident{fetch}}{fetch}}\\{{\nwixident{fsPromises}}{fsPromises}}\\{{\nwixident{path}}{path}}\\{{\nwixident{urlExists}}{urlExists}}\\{{\nwixident{util}}{util}}}\nwendcode{}\nwbegindocs{20}\nwdocspar
+
+
+\subsection{Задание констант}
+orgTest - имя организации в которой репозиторий 
+описания задания. orgCheck - имя организации где сохраняем 
+результат.
+\nwenddocs{}\nwbegincode{21}\sublabel{NW17W4dw-T7QGV-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-T7QGV-1}}}\moddef{константы~{\nwtagstyle{}\subpageref{NW17W4dw-T7QGV-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW17W4dw-49Qatc-1}}\nwenddeflinemarkup
+const \nwlinkedidentc{orgTest}{NW17W4dw-T7QGV-1} = 'cs204';\nwindexdefn{\nwixident{orgTest}}{orgTest}{NW17W4dw-T7QGV-1}
+const \nwlinkedidentc{orgCheck}{NW17W4dw-T7QGV-1} = 'cs204check';\nwindexdefn{\nwixident{orgCheck}}{orgCheck}{NW17W4dw-T7QGV-1}
+var resTest = '';
+var local = false;
+\nwused{\\{NW17W4dw-49Qatc-1}}\nwidentdefs{\\{{\nwixident{orgCheck}}{orgCheck}}\\{{\nwixident{orgTest}}{orgTest}}}\nwendcode{}\nwbegindocs{22}\nwdocspar
+
+\section{Установка в домашний каталог}
+Настроим на установку в каталог ~/npm.
+\nwenddocs{}\nwbegincode{23}\sublabel{NW17W4dw-UzBFu-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-UzBFu-1}}}\moddef{установка~{\nwtagstyle{}\subpageref{NW17W4dw-UzBFu-1}}}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+mkdir ~/npm
+npm config prefix ~/npm
+export PATH="$HOME/npm/bin:PATH"
+\nwnotused{установка}\nwendcode{}\nwbegindocs{24}\nwdocspar
+Последняя строчка в {\Tt{}.profile\nwendquote}, чтобы система запускала программы.
+\nwenddocs{}\nwfilename{src/Makefile.nw}\nwbegindocs{0}\subsection{Makefile}
+
+Сборкy проекта осуществляет утилита make. В этой части
+мы создаем Makefile, управляющий сборкой. 
+Утилита make начинает читать этот файл с конца, поэтому
+такой порядок действий выбран в файле.
+Результат работы утилиты make -- это текст   test.pdf,
+и файлы -- программы check204, эти цели заданы в первой строке.
+Здесь используются утилиты noweave, notangle из пакета noweb,
+ pdflatex генерирует pdf файл из tex файла. 
+
+\nwenddocs{}\nwbegincode{1}\sublabel{NW3GAfYZ-2CgwVs-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW3GAfYZ-2CgwVs-1}}}\moddef{Makefile~{\nwtagstyle{}\subpageref{NW3GAfYZ-2CgwVs-1}}}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+res: doc/check204.pdf  bin/check204 
+
+
+bin/check204: src/main.nw 
+        notangle -Rcheck204.js src/main.nw > bin/check204
+
+
+
+
+doc/check204.pdf: src/check204.tex  tmp/main.tex
+        pdflatex -output-directory=doc src/check204.tex
+        pdflatex -output-directory=doc src/check204.tex
+
+# Утилита noweave генерирует файл main.tex из отдельных файлов 
+# формата noweb.
+tmp/main.tex: src/main.nw  src/Makefile.nw
+        noweave -n -latex -index -autodefs c  src/main.nw \\
+                src/Makefile.nw > tmp/main.tex
+
+# Эту команду выполняем в случае, если были изменения в файле 
+#Makefile.nw, notangle генерирует новый Makefile
+
+new: src/Makefile.nw
+        notangle -t8 -RMakefile src/Makefile.nw > Makefile
+
+
+view:
+        evince doc/check204.pdf 
+        
+clean:
+        rm doc/check204.pdf bin/check204  
+
+\nwnotused{Makefile}\nwendcode{}\nwbegindocs{2}\nwdocspar
+\nwenddocs{}
+
+\nwixlogsorted{c}{{check204.js}{NW17W4dw-49Qatc-1}{\nwixd{NW17W4dw-49Qatc-1}}}%
+\nwixlogsorted{c}{{Makefile}{NW3GAfYZ-2CgwVs-1}{\nwixd{NW3GAfYZ-2CgwVs-1}}}%
+\nwixlogsorted{c}{{загрузка модулей}{NW17W4dw-jXK53-1}{\nwixu{NW17W4dw-49Qatc-1}\nwixd{NW17W4dw-jXK53-1}}}%
+\nwixlogsorted{c}{{закачивание описания}{NW17W4dw-3lPWHK-1}{\nwixu{NW17W4dw-49Qatc-1}\nwixd{NW17W4dw-3lPWHK-1}}}%
+\nwixlogsorted{c}{{клонирование каталога}{NW17W4dw-2wOKcT-1}{\nwixu{NW17W4dw-1DWLUb-1}\nwixd{NW17W4dw-2wOKcT-1}}}%
+\nwixlogsorted{c}{{константы}{NW17W4dw-T7QGV-1}{\nwixu{NW17W4dw-49Qatc-1}\nwixd{NW17W4dw-T7QGV-1}}}%
+\nwixlogsorted{c}{{отправка на проверку}{NW17W4dw-1DWLUb-1}{\nwixu{NW17W4dw-49Qatc-1}\nwixd{NW17W4dw-1DWLUb-1}}}%
+\nwixlogsorted{c}{{проверка аргументов командной строки}{NW17W4dw-8iZgk-1}{\nwixu{NW17W4dw-49Qatc-1}\nwixd{NW17W4dw-8iZgk-1}}}%
+\nwixlogsorted{c}{{проверка наличия файлов}{NW17W4dw-9JOxD-1}{\nwixu{NW17W4dw-2ZE1fx-1}\nwixd{NW17W4dw-9JOxD-1}}}%
+\nwixlogsorted{c}{{проверка правильности вывода из программы}{NW17W4dw-35pQwU-1}{\nwixu{NW17W4dw-2ZE1fx-1}\nwixd{NW17W4dw-35pQwU-1}}}%
+\nwixlogsorted{c}{{создание временного каталога}{NW17W4dw-1dC1KU-1}{\nwixu{NW17W4dw-1DWLUb-1}\nwixd{NW17W4dw-1dC1KU-1}}}%
+\nwixlogsorted{c}{{тестирование задания}{NW17W4dw-2ZE1fx-1}{\nwixu{NW17W4dw-49Qatc-1}\nwixd{NW17W4dw-2ZE1fx-1}}}%
+\nwixlogsorted{c}{{установка}{NW17W4dw-UzBFu-1}{\nwixd{NW17W4dw-UzBFu-1}}}%
+\nwixlogsorted{i}{{\nwixident{chalk}}{chalk}}%
+\nwixlogsorted{i}{{\nwixident{exec}}{exec}}%
+\nwixlogsorted{i}{{\nwixident{fetch}}{fetch}}%
+\nwixlogsorted{i}{{\nwixident{fsPromises}}{fsPromises}}%
+\nwixlogsorted{i}{{\nwixident{orgCheck}}{orgCheck}}%
+\nwixlogsorted{i}{{\nwixident{orgTest}}{orgTest}}%
+\nwixlogsorted{i}{{\nwixident{path}}{path}}%
+\nwixlogsorted{i}{{\nwixident{urlExists}}{urlExists}}%
+\nwixlogsorted{i}{{\nwixident{util}}{util}}%
+
