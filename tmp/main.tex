@@ -264,12 +264,17 @@ var local = false;
 
 \section{Установка в домашний каталог}
 Настроим на установку в каталог ~/npm.
-\nwenddocs{}\nwbegincode{23}\sublabel{NW17W4dw-UzBFu-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-UzBFu-1}}}\moddef{установка~{\nwtagstyle{}\subpageref{NW17W4dw-UzBFu-1}}}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\nwenddocs{}\nwbegincode{23}\sublabel{NW17W4dw-UzBFu-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-UzBFu-1}}}\moddef{установка~{\nwtagstyle{}\subpageref{NW17W4dw-UzBFu-1}}}\endmoddef\nwstartdeflinemarkup\nwprevnextdefs{\relax}{NW17W4dw-UzBFu-2}\nwenddeflinemarkup
 mkdir ~/npm
-npm config prefix ~/npm
+npm config set prefix ~/npm
 export PATH="$HOME/npm/bin:PATH"
-\nwnotused{установка}\nwendcode{}\nwbegindocs{24}\nwdocspar
-Последняя строчка в {\Tt{}.profile\nwendquote}, чтобы система запускала программы.
+\nwalsodefined{\\{NW17W4dw-UzBFu-2}}\nwnotused{установка}\nwendcode{}\nwbegindocs{24}\nwdocspar
+Последняя строчка в {\Tt{}.profile\nwendquote}, чтобы система находила программы.
+Перезагрузить.
+\nwenddocs{}\nwbegincode{25}\sublabel{NW17W4dw-UzBFu-2}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-UzBFu-2}}}\moddef{установка~{\nwtagstyle{}\subpageref{NW17W4dw-UzBFu-1}}}\plusendmoddef\nwstartdeflinemarkup\nwprevnextdefs{NW17W4dw-UzBFu-1}{\relax}\nwenddeflinemarkup
+npm --global install check204
+\nwendcode{}\nwbegindocs{26}\nwdocspar
+
 \nwenddocs{}\nwfilename{src/Makefile.nw}\nwbegindocs{0}\subsection{Makefile}
 
 Сборкy проекта осуществляет утилита make. В этой части
@@ -309,7 +314,7 @@ new: src/Makefile.nw
 
 
 view:
-        evince doc/check204.pdf 
+        evince doc/check204.pdf &
         
 clean:
         rm doc/check204.pdf bin/check204  
@@ -329,7 +334,7 @@ clean:
 \nwixlogsorted{c}{{проверка правильности вывода из программы}{NW17W4dw-35pQwU-1}{\nwixu{NW17W4dw-2ZE1fx-1}\nwixd{NW17W4dw-35pQwU-1}}}%
 \nwixlogsorted{c}{{создание временного каталога}{NW17W4dw-1dC1KU-1}{\nwixu{NW17W4dw-1DWLUb-1}\nwixd{NW17W4dw-1dC1KU-1}}}%
 \nwixlogsorted{c}{{тестирование задания}{NW17W4dw-2ZE1fx-1}{\nwixu{NW17W4dw-49Qatc-1}\nwixd{NW17W4dw-2ZE1fx-1}}}%
-\nwixlogsorted{c}{{установка}{NW17W4dw-UzBFu-1}{\nwixd{NW17W4dw-UzBFu-1}}}%
+\nwixlogsorted{c}{{установка}{NW17W4dw-UzBFu-1}{\nwixd{NW17W4dw-UzBFu-1}\nwixd{NW17W4dw-UzBFu-2}}}%
 \nwixlogsorted{i}{{\nwixident{chalk}}{chalk}}%
 \nwixlogsorted{i}{{\nwixident{exec}}{exec}}%
 \nwixlogsorted{i}{{\nwixident{fetch}}{fetch}}%

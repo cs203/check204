@@ -25,7 +25,7 @@ new: src/Makefile.nw
 
 
 view:
-	evince doc/check204.pdf 
+	evince doc/check204.pdf &
 	
 clean:
 	rm doc/check204.pdf bin/check204  

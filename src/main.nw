@@ -266,7 +266,12 @@ var local = false;
 Настроим на установку в каталог ~/npm.
 <<установка>>=
 mkdir ~/npm
-npm config prefix ~/npm
+npm config set prefix ~/npm
 export PATH="$HOME/npm/bin:PATH"
-@
-Последняя строчка в [[.profile]], чтобы система запускала программы.
+@ 
+Последняя строчка в [[.profile]], чтобы система находила программы.
+Перезагрузить.
+<<установка>>=
+npm --global install check204
+@ 
+
