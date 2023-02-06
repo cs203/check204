@@ -1,13 +1,14 @@
 \subsection{Makefile}
 
-Сборкy проекта осуществляет утилита make. В этой части
+В этой части
 мы создаем Makefile, управляющий сборкой. 
 Утилита make начинает читать этот файл с конца, поэтому
 такой порядок действий выбран в файле.
-Результат работы утилиты make -- это текст   test.pdf,
-и файлы -- программы check204, эти цели заданы в первой строке.
+Результат работы утилиты make -- это текст   check204.pdf,
+и файл -- javascript программы check204, эти цели заданы в первой строке.
 Здесь используются утилиты noweave, notangle из пакета noweb,
- pdflatex генерирует pdf файл из tex файла. 
+для гинерации tex и js файлов соответственно,
+ pdflatex генерирует pdf файл из tex файлов. 
 
 <<Makefile>>=
 res: doc/check204.pdf  bin/check204 
@@ -40,6 +41,6 @@ view:
 	evince doc/check204.pdf &
 	
 clean:
-	rm doc/check204.pdf bin/check204  
+	rm doc/check204.pdf bin/check204 tmp/main.tex 
 
 @ 

@@ -168,7 +168,7 @@ async function filesExists(test)
 \nwenddocs{}\nwbegincode{11}\sublabel{NW17W4dw-35pQwU-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-35pQwU-1}}}\moddef{проверка правильности вывода из программы~{\nwtagstyle{}\subpageref{NW17W4dw-35pQwU-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW17W4dw-2ZE1fx-1}}\nwenddeflinemarkup
 async function testOutput(test)
 \{
-        const \{ stdout, stderr \} = await \nwlinkedidentc{exec}{NW17W4dw-jXK53-1}(`node $\{test.run\}`);
+        const \{ stdout, stderr \} = await \nwlinkedidentc{exec}{NW17W4dw-jXK53-1}(`$\{test.run\}`);
         if(!stdout.localeCompare(test.output))
         \{
                 console.log(\nwlinkedidentc{chalk}{NW17W4dw-jXK53-1}.green('Вывод из программы верный'));
@@ -218,6 +218,7 @@ async function createDir(test)
 \nwenddocs{}\nwbegincode{17}\sublabel{NW17W4dw-2wOKcT-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW17W4dw-2wOKcT-1}}}\moddef{клонирование каталога~{\nwtagstyle{}\subpageref{NW17W4dw-2wOKcT-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW17W4dw-1DWLUb-1}}\nwenddeflinemarkup
 async function cloneRepo(org, psetName, test)
 \{
+        try\{
         const readlineSync = require('readline-sync')
         var username = readlineSync.question('Github username:');
         const origin = `https://$\{username\}@github.com/$\{org\}/$\{username\}`;
@@ -234,6 +235,10 @@ async function cloneRepo(org, psetName, test)
         await \nwlinkedidentc{fsPromises}{NW17W4dw-jXK53-1}.writeFile(fileName,  resTest);
         await \nwlinkedidentc{exec}{NW17W4dw-jXK53-1}(`git config user.name test && git config user.email test && git add . && git commit -m test`, \{cwd: '/tmp/test'\});
         await \nwlinkedidentc{exec}{NW17W4dw-jXK53-1}(`git push -f $\{origin\} $\{psetName\}`, \{cwd: '/tmp/test'\}); 
+        \}catch(error)
+        \{
+                console.error(error)
+        \}
 \}
 \nwused{\\{NW17W4dw-1DWLUb-1}}\nwidentuses{\\{{\nwixident{exec}}{exec}}\\{{\nwixident{fsPromises}}{fsPromises}}\\{{\nwixident{path}}{path}}}\nwindexuse{\nwixident{exec}}{exec}{NW17W4dw-2wOKcT-1}\nwindexuse{\nwixident{fsPromises}}{fsPromises}{NW17W4dw-2wOKcT-1}\nwindexuse{\nwixident{path}}{path}{NW17W4dw-2wOKcT-1}\nwendcode{}\nwbegindocs{18}\nwdocspar
 
@@ -277,14 +282,15 @@ npm --global install check204
 
 \nwenddocs{}\nwfilename{src/Makefile.nw}\nwbegindocs{0}\subsection{Makefile}
 
-Сборкy проекта осуществляет утилита make. В этой части
+В этой части
 мы создаем Makefile, управляющий сборкой. 
 Утилита make начинает читать этот файл с конца, поэтому
 такой порядок действий выбран в файле.
-Результат работы утилиты make -- это текст   test.pdf,
-и файлы -- программы check204, эти цели заданы в первой строке.
+Результат работы утилиты make -- это текст   check204.pdf,
+и файл -- javascript программы check204, эти цели заданы в первой строке.
 Здесь используются утилиты noweave, notangle из пакета noweb,
- pdflatex генерирует pdf файл из tex файла. 
+для гинерации tex и js файлов соответственно,
+ pdflatex генерирует pdf файл из tex файлов. 
 
 \nwenddocs{}\nwbegincode{1}\sublabel{NW3GAfYZ-2CgwVs-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW3GAfYZ-2CgwVs-1}}}\moddef{Makefile~{\nwtagstyle{}\subpageref{NW3GAfYZ-2CgwVs-1}}}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 res: doc/check204.pdf  bin/check204 
@@ -317,7 +323,7 @@ view:
         evince doc/check204.pdf &
         
 clean:
-        rm doc/check204.pdf bin/check204  
+        rm doc/check204.pdf bin/check204 tmp/main.tex 
 
 \nwnotused{Makefile}\nwendcode{}\nwbegindocs{2}\nwdocspar
 \nwenddocs{}

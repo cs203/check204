@@ -1,10 +1,11 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2021.5.1)  6 JUN 2021 02:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.2.6)  6 FEB 2023 19:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **src/check204.tex
 (./src/check204.tex
-LaTeX2e <2018-12-01>
+LaTeX2e <2021-11-15> patch level 1
+L3 programming layer <2022-01-21>
 (/usr/share/texlive/texmf-dist/tex/latex/extsizes/extarticle.cls
 Document Class: extarticle 1996/10/08 v1.0 Non Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/extsizes/size14.clo
@@ -17,72 +18,69 @@ LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
 (Font)                  OMX/cmex/m/n --> OMX/cmex/m/n on input line 57.
 LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
 (Font)                  OMX/cmex/m/n --> OMX/cmex/m/n on input line 57.
-\big@size=\dimen102
+\big@size=\dimen138
 )
-\c@part=\count80
-\c@section=\count81
-\c@subsection=\count82
-\c@subsubsection=\count83
-\c@paragraph=\count84
-\c@subparagraph=\count85
-\c@figure=\count86
-\c@table=\count87
-\abovecaptionskip=\skip41
-\belowcaptionskip=\skip42
-\bibindent=\dimen103
+\c@part=\count185
+\c@section=\count186
+\c@subsection=\count187
+\c@subsubsection=\count188
+\c@paragraph=\count189
+\c@subparagraph=\count190
+\c@figure=\count191
+\c@table=\count192
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen139
 )
 (/usr/share/texmf/tex/plain/misc/noweb.sty
-\nwmarginglue=\dimen104
-\codehsize=\dimen105
-\codemargin=\dimen106
-\nwdefspace=\dimen107
-\equivbox=\box27
+\nwmarginglue=\dimen140
+\codehsize=\dimen141
+\codemargin=\dimen142
+\nwdefspace=\dimen143
+\equivbox=\box50
 LaTeX Font Info:    External font `cmex7' loaded for size
-(Font)              <7> on input line 79.
-\plusequivbox=\box28
-\nwcodetopsep=\skip43
-\nwcodepenalty=\count88
-\nwbreakcodespace=\dimen108
-\@original@textwidth=\dimen109
-\nwcodecommentsep=\skip44
-\@nwlopage=\count89
-\@nwhipage=\count90
-\@nwlosub=\count91
-\@nwhisub=\count92
-\@nwpagetemp=\count93
-\@nwpagecount=\count94
-\sub@page=\count95
-\@nwalph@n=\count96
-\nw@chunkcount=\count97
-\@commacount=\count98
-\nwix@counter=\count99
+(Font)              <7> on input line 75.
+\plusequivbox=\box51
+\nwcodetopsep=\skip49
+\nwcodepenalty=\count193
+\nwbreakcodespace=\dimen144
+\@original@textwidth=\dimen145
+\nwcodecommentsep=\skip50
+\@nwlopage=\count194
+\@nwhipage=\count195
+\@nwlosub=\count196
+\@nwhisub=\count197
+\@nwpagetemp=\count198
+\@nwpagecount=\count199
+\sub@page=\count266
+\@nwalph@n=\count267
+\nw@chunkcount=\count268
+\@commacount=\count269
+\nwix@counter=\count270
 )
 (/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
-Package: inputenc 2018/08/11 v1.3c Input encoding file
-\inpenc@prehook=\toks14
-\inpenc@posthook=\toks15
+Package: inputenc 2021/02/14 v1.3d Input encoding file
+\inpenc@prehook=\toks16
+\inpenc@posthook=\toks17
 )
 (/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty
-Package: babel 2018/11/13 3.27 The Babel package
-
-(/usr/share/texlive/texmf-dist/tex/generic/babel/switch.def
-File: switch.def 2018/11/13 3.27 Babel switching mechanism
-)
-(/usr/share/texlive/texmf-dist/tex/generic/babel-russian/russianb.ldf
-Language: russian 2017/08/12 1.3j Russian support for the Babel system
-
-(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.def
-File: babel.def 2018/11/13 3.27 Babel common definitions
-\babel@savecnt=\count100
-\U@D=\dimen110
+Package: babel 2022/01/26 3.70 The Babel package
+\babel@savecnt=\count271
+\U@D=\dimen146
+\l@unhyphenated=\language12
 
 (/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
-\bbl@dirlevel=\count101
-)
+\bbl@readstream=\read2
+\bbl@dirlevel=\count272
+
+(/usr/share/texlive/texmf-dist/tex/generic/babel-russian/russianb.ldf
+File: russianb.ldf 2021/01/10 1.3m Russian support for the Babel system
+Language: russian 2020/09/09 1.3k Russian support for the Babel system
+
 
 Package babel Warning: No Cyrillic font encoding has been loaded so far.
 (babel)                A font encoding should be declared before babel.
-(babel)                Default `T2A' encoding will be loaded  on input line 74.
+(babel)                Default `T2A' encoding will be loaded  on input line 78.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/cyrillic/t2aenc.def
@@ -91,7 +89,7 @@ Now handling font encoding T2A ...
 ... processing UTF-8 mapping file for font encoding T2A
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/t2aenc.dfu
-File: t2aenc.dfu 2018/10/05 v1.2f UTF-8 support for inputenc
+File: t2aenc.dfu 2021/06/21 v1.2n UTF-8 support
    defining Unicode char U+00A4 (decimal 164)
    defining Unicode char U+00A7 (decimal 167)
    defining Unicode char U+00AB (decimal 171)
@@ -279,62 +277,73 @@ File: t2aenc.dfu 2018/10/05 v1.2f UTF-8 support for inputenc
    defining Unicode char U+2329 (decimal 9001)
    defining Unicode char U+232A (decimal 9002)
    defining Unicode char U+2423 (decimal 9251)
+   defining Unicode char U+27E8 (decimal 10216)
+   defining Unicode char U+27E9 (decimal 10217)
+   defining Unicode char U+FB00 (decimal 64256)
+   defining Unicode char U+FB01 (decimal 64257)
+   defining Unicode char U+FB02 (decimal 64258)
+   defining Unicode char U+FB03 (decimal 64259)
+   defining Unicode char U+FB04 (decimal 64260)
+   defining Unicode char U+FB05 (decimal 64261)
+   defining Unicode char U+FB06 (decimal 64262)
 ))
-Package babel Info: Making " an active character on input line 120.
-Package babel Info: Default for \cyrdash is provided on input line 157.
+Package babel Info: Making " an active character on input line 124.
+Package babel Info: Default for \cyrdash is provided on input line 163.
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
-Package: geometry 2018/04/16 v5.8 Page Geometry
+Package: geometry 2020/01/02 v5.9 Page Geometry
 
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
-\KV@toks@=\toks16
+\KV@toks@=\toks18
 )
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifpdf.sty
-Package: ifpdf 2018/09/07 v3.3 Provides the ifpdf switch
-)
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifvtex.sty
-Package: ifvtex 2016/05/16 v1.6 Detect VTeX and its facilities (HO)
-Package ifvtex Info: VTeX not detected.
-)
-(/usr/share/texlive/texmf-dist/tex/generic/ifxetex/ifxetex.sty
-Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
-)
-\Gm@cnth=\count102
-\Gm@cntv=\count103
-\c@Gm@tempcnt=\count104
-\Gm@bindingoffset=\dimen111
-\Gm@wd@mp=\dimen112
-\Gm@odd@mp=\dimen113
-\Gm@even@mp=\dimen114
-\Gm@layoutwidth=\dimen115
-\Gm@layoutheight=\dimen116
-\Gm@layouthoffset=\dimen117
-\Gm@layoutvoffset=\dimen118
-\Gm@dimlist=\toks17
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2020/03/06 v1.0d TeX engine tests
+))
+\Gm@cnth=\count273
+\Gm@cntv=\count274
+\c@Gm@tempcnt=\count275
+\Gm@bindingoffset=\dimen147
+\Gm@wd@mp=\dimen148
+\Gm@odd@mp=\dimen149
+\Gm@even@mp=\dimen150
+\Gm@layoutwidth=\dimen151
+\Gm@layoutheight=\dimen152
+\Gm@layouthoffset=\dimen153
+\Gm@layoutvoffset=\dimen154
+\Gm@dimlist=\toks19
 )
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
-Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
 
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2017/06/25 v1.2c Standard LaTeX Graphics (DPC,SPQR)
+Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
 
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
-Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
 )
 (/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
-Package graphics Info: Driver file: pdftex.def on input line 99.
+Package graphics Info: Driver file: pdftex.def on input line 107.
 
 (/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def
-File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
 ))
-\Gin@req@height=\dimen119
-\Gin@req@width=\dimen120
+\Gin@req@height=\dimen155
+\Gin@req@width=\dimen156
+)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2022-01-12 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count276
+\l__pdf_internal_box=\box52
 )
 (doc/check204.aux
-LaTeX Font Info:    Try loading font information for T2A+cmr on input line 3.
+LaTeX Font Info:    Trying to load font information for T2A+cmr on input line 5
+.
  (/usr/share/texlive/texmf-dist/tex/latex/cyrillic/t2acmr.fd
 File: t2acmr.fd 2001/08/11 v1.0a Computer Modern Cyrillic font definitions
 ))
@@ -342,11 +351,13 @@ File: t2acmr.fd 2001/08/11 v1.0a Computer Modern Cyrillic font definitions
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 10.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
 LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 10.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
 LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
@@ -354,6 +365,7 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
 LaTeX Font Info:    Checking defaults for T2A/cmr/m/n on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
+LaTeX Info: Redefining \th on input line 10.
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -390,67 +402,29 @@ LaTeX Font Info:    ... okay on input line 10.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count105
-\scratchdimen=\dimen121
-\scratchbox=\box29
-\nofMPsegments=\count106
-\nofMParguments=\count107
-\everyMPshowfont=\toks18
-\MPscratchCnt=\count108
-\MPscratchDim=\dimen122
-\MPnumerator=\count109
-\makeMPintoPDFobject=\count110
-\everyMPtoPDFconversion=\toks19
-) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
-Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
-Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
-)
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
-Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
-Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
-Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
-)))
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
-Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
-Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty
-Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
-
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifluatex.sty
-Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
-Package ifluatex Info: LuaTeX not detected.
-))))
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
-Package: pdftexcmds 2018/09/10 v0.29 Utility functions of pdfTeX for LuaTeX (HO
-)
-Package pdftexcmds Info: LuaTeX not detected.
-Package pdftexcmds Info: \pdf@primitive is available.
-Package pdftexcmds Info: \pdf@ifprimitive is available.
-Package pdftexcmds Info: \pdfdraftmode found.
-)
+\scratchcounter=\count277
+\scratchdimen=\dimen157
+\scratchbox=\box53
+\nofMPsegments=\count278
+\nofMParguments=\count279
+\everyMPshowfont=\toks20
+\MPscratchCnt=\count280
+\MPscratchDim=\dimen158
+\MPnumerator=\count281
+\makeMPintoPDFobject=\count282
+\everyMPtoPDFconversion=\toks21
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
-38.
-Package grfext Info: Graphics extension search list:
-(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
-G,.JBIG2,.JB2,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 456.
+85.
 
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 (./tmp/main.tex
-LaTeX Font Info:    Try loading font information for T2A+cmtt on input line 33.
-
+LaTeX Font Info:    Trying to load font information for T2A+cmtt on input line 
+33.
  (/usr/share/texlive/texmf-dist/tex/latex/cyrillic/t2acmtt.fd
 File: t2acmtt.fd 2001/08/11 v1.0a Computer Modern Cyrillic font definitions
 )
@@ -478,13 +452,13 @@ Overfull \hbox (41.91081pt too wide) in paragraph at lines 91--91
  []
 
 [3] [4] [5] [6]
-Overfull \hbox (85.761pt too wide) in paragraph at lines 230--230
+Overfull \hbox (85.761pt too wide) in paragraph at lines 231--231
  []                \T2A/cmtt/m/n/14.4 await fsPromises.copyFile(path.join(proce
 ss.cwd(), file), path.join('/tmp/test', file));[]  
  []
 
 
-Overfull \hbox (297.70358pt too wide) in paragraph at lines 235--235
+Overfull \hbox (297.70358pt too wide) in paragraph at lines 236--236
  []        \T2A/cmtt/m/n/14.4 await exec(`git config user.name test && git conf
 ig user.email test && git add . && git commit -m test`, {cwd: '/tmp/test'});[] 
  
@@ -492,36 +466,37 @@ ig user.email test && git add . && git commit -m test`, {cwd: '/tmp/test'});[]
 
 [7]
 LaTeX Font Info:    External font `cmex7' loaded for size
-(Font)              <5> on input line 267.
+(Font)              <5> on input line 272.
  [8]) (doc/check204.toc [9])
 \tf@toc=\write3
 \openout3 = `check204.toc'.
 
  [10] (doc/check204.aux) ) 
 Here is how much of TeX's memory you used:
- 3492 strings out of 493921
- 48515 string characters out of 6166404
- 128966 words of memory out of 5000000
- 7122 multiletter control sequences out of 15000+600000
- 16299 words of font info for 40 fonts, out of 8000000 for 9000
- 497 hyphenation exceptions out of 8191
- 41i,6n,25p,476b,271s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t
-2a.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
-></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/
-texmf/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf/fonts/type1/pu
-blic/cm-super/sfbx1728.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx20
-74.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/t
-exmf/fonts/type1/public/cm-super/sfrm1440.pfb></usr/share/texmf/fonts/type1/pub
-lic/cm-super/sfrm1728.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm248
-8.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfti1440.pfb></usr/share/te
-xmf/fonts/type1/public/cm-super/sftt1000.pfb></usr/share/texmf/fonts/type1/publ
-ic/cm-super/sftt1440.pfb>
-Output written on doc/check204.pdf (10 pages, 245949 bytes).
+ 3862 strings out of 479721
+ 60964 string characters out of 5887698
+ 377584 words of memory out of 5000000
+ 21791 multiletter control sequences out of 15000+600000
+ 481918 words of font info for 54 fonts, out of 8000000 for 9000
+ 430 hyphenation exceptions out of 8191
+ 55i,6n,62p,427b,324s stack positions out of 5000i,500n,10000p,200000b,80000s
+ </home/vadim/.texlive2021/texmf-var/fonts/pk/ljfour/
+lh/lh-t2a/labx1440.600pk> </home/vadim/.texlive2021/texmf-var/fonts/pk/ljfour/l
+h/lh-t2a/latt1000.600pk> </home/vadim/.texlive2021/texmf-var/fonts/pk/ljfour/lh
+/lh-t2a/lati1440.600pk> </home/vadim/.texlive2021/texmf-var/fonts/pk/ljfour/lh/
+lh-t2a/larm1000.600pk> </home/vadim/.texlive2021/texmf-var/fonts/pk/ljfour/lh/l
+h-t2a/latt1440.600pk> </home/vadim/.texlive2021/texmf-var/fonts/pk/ljfour/lh/lh
+-t2a/labx1728.600pk> </home/vadim/.texlive2021/texmf-var/fonts/pk/ljfour/lh/lh-
+t2a/labx2074.600pk> </home/vadim/.texlive2021/texmf-var/fonts/pk/ljfour/lh/lh-t
+2a/larm1440.600pk> </home/vadim/.texlive2021/texmf-var/fonts/pk/ljfour/lh/lh-t2
+a/larm1728.600pk> </home/vadim/.texlive2021/texmf-var/fonts/pk/ljfour/lh/lh-t2a
+/larm2488.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on doc/check204.pdf (10 pages, 175482 bytes).
 PDF statistics:
- 90 PDF objects out of 1000 (max. 8388607)
- 64 compressed objects within 1 object stream
+ 516 PDF objects out of 1000 (max. 8388607)
+ 73 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -28,5 +28,5 @@ view:
 	evince doc/check204.pdf &
 	
 clean:
-	rm doc/check204.pdf bin/check204  
+	rm doc/check204.pdf bin/check204 tmp/main.tex 
 

@@ -168,7 +168,7 @@ async function filesExists(test)
 <<проверка правильности вывода из программы>>=
 async function testOutput(test)
 {
-	const { stdout, stderr } = await exec(`node ${test.run}`);
+	const { stdout, stderr } = await exec(`${test.run}`);
 	if(!stdout.localeCompare(test.output))
 	{
 		console.log(chalk.green('Вывод из программы верный'));
@@ -218,6 +218,7 @@ async function createDir(test)
 <<клонирование каталога>>=
 async function cloneRepo(org, psetName, test)
 {
+	try{
 	const readlineSync = require('readline-sync')
 	var username = readlineSync.question('Github username:');
 	const origin = `https://${username}@github.com/${org}/${username}`;
@@ -234,6 +235,10 @@ async function cloneRepo(org, psetName, test)
 	await fsPromises.writeFile(fileName,  resTest);
 	await exec(`git config user.name test && git config user.email test && git add . && git commit -m test`, {cwd: '/tmp/test'});
 	await exec(`git push -f ${origin} ${psetName}`, {cwd: '/tmp/test'}); 
+	}catch(error)
+	{
+		console.error(error)
+	}
 }
 @ 
 
