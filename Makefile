@@ -1,8 +1,8 @@
-res: doc/check204.pdf  bin/check204 
+res: doc/check204.pdf  bin/check204.js
 
 
-bin/check204: src/main.nw 
-	notangle -Rcheck204.js src/main.nw > bin/check204
+bin/check204.js: src/main.nw 
+	notangle -Rcheck204.js src/main.nw > bin/check204.js
 
 
 

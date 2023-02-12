@@ -1,28 +1,17 @@
 #!/usr/bin/env node
-const path = require('path');
-const chalk = require('chalk');
-const util = require('util');
-const urlExists = util.promisify(require('url-exists'));
-const fetch = require('node-fetch');
-const fsPromises = require('fs').promises;
-const exec = util.promisify(require('child_process').exec);
+import chalk from 'chalk';
+import urlExist from 'url-exists-nodejs';
+import fetch from 'node-fetch';
+import {readdir, rm, mkdir, copyFile, writeFile } from 'node:fs/promises';
+import readlineSync from 'readline-sync';
+import * as child from 'node:child_process';
+import * as util from 'node:util';
+const exec = util.promisify(child.exec);
+import * as path from 'node:path';
 const orgTest = 'cs204';
 const orgCheck = 'cs204check';
 var resTest = '';
 var local = false;
-;(async function main()
-{
-        await checkArgs();
-        const psetName = process.argv[2];
-        const test = await getTask(psetName); 
-        await filesExists(test);
-        await testOutput(test);
-        if(local)
-                process.exit(0);
-        await createDir(test);
-        await cloneRepo(orgTest, psetName, test);
-})()
-
 async function checkArgs() 
 {
         if(process.argv.length < 3 || process.argv.length > 4)
@@ -34,8 +23,8 @@ async function checkArgs()
                 process.exit(1); 
         }
         const url2 = `https://raw.githubusercontent.com/${orgTest}/psets/${process.argv[2]}.json`;
-        const url_exists = await urlExists(url2);
-        if(!url_exists)
+        const url_exist = await urlExist(url2);
+        if(!url_exist)
         {
                 console.log(chalk.red("Неверный адрес задания"));
                 process.exit(2);
@@ -53,7 +42,6 @@ async function checkArgs()
         }
                 
 };
-
 
 async function getTask(psetName)
 {
@@ -76,8 +64,8 @@ async function getTask(psetName)
 };
 async function filesExists(test)
 {
-        const files = await fsPromises.readdir(process.cwd());
-        for(file of test.files)
+        const files = await readdir(process.cwd());
+        for(const file of test.files)
         {
                 if(files.includes(file)) 
                 {
@@ -123,28 +111,28 @@ async function testOutput(test)
 }
 async function createDir(test)
 {
-        await fsPromises.rmdir('/tmp/test', {recursive: true}); 
+        await rm('/tmp/test', {force: true, recursive: true}); 
         console.log("Folder /tmp/test deleted");
-        await fsPromises.mkdir('/tmp/test', {recursive: true}); 
+        await mkdir('/tmp/test', {recursive: true}); 
         console.log("Folder create dir");
 }
 async function cloneRepo(org, psetName, test)
 {
         try{
-        const readlineSync = require('readline-sync')
         var username = readlineSync.question('Github username:');
-        const origin = `https://${username}@github.com/${org}/${username}`;
+        const origin =`git@github.com:${org}/${username}.git`;
+        // const origin = `https://${username}@github.com/${org}/${username}`;
         const {stdout, stderr} = await exec(`git clone ${origin} -b main /tmp/test`);
         console.log(stdout);
         console.log(stderr);
         await exec(`git checkout -b ${psetName}`, {cwd:'/tmp/test'})
         for(let file of test.files)
         {
-                await fsPromises.copyFile(path.join(process.cwd(), file), path.join('/tmp/test', file));
+                await copyFile(path.join(process.cwd(), file), path.join('/tmp/test', file));
         } 
         const fileName = `/tmp/test/${psetName.split('/')[1]}.md`;
         console.log(fileName);
-        await fsPromises.writeFile(fileName,  resTest);
+        await writeFile(fileName,  resTest);
         await exec(`git config user.name test && git config user.email test && git add . && git commit -m test`, {cwd: '/tmp/test'});
         await exec(`git push -f ${origin} ${psetName}`, {cwd: '/tmp/test'}); 
         }catch(error)
@@ -152,3 +140,15 @@ async function cloneRepo(org, psetName, test)
                 console.error(error)
         }
 }
+;(async function main()
+{
+        await checkArgs();
+                const psetName = process.argv[2];
+                const test = await getTask(psetName); 
+                        await filesExists(test);
+                        await testOutput(test);
+        if(local)
+                process.exit(0);
+                        await createDir(test);
+                        await cloneRepo(orgTest, psetName, test);
+})()

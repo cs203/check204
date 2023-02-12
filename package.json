@@ -2,9 +2,9 @@
   "name": "check204",
   "version": "1.0.1",
   "description": "",
-  "main": "bin/check204",
+  "main": "bin/check204.js",
   "bin": {
-    "check204": "bin/check204"
+    "check204.js": "bin/check204.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,11 +13,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chalk": "^4.1.1",
-    "chunk": "0.0.3",
-    "node-fetch": "^2.6.1",
+    "chalk": "^5.2.0",
+    "node-fetch": "^3.3.0",
     "readline-sync": "^1.4.10",
-    "url-exists": "^1.0.3",
-    "util": "^0.12.4"
-  }
+    "url-exists-nodejs": "^0.2.4"
+  },
+  "type": "module"
 }

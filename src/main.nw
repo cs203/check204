@@ -36,10 +36,10 @@
 пример файла [[hello.js]] .
 Структура файла:
 
-[[{ "files":["hello.js"], "output":"Hello, World!", "run": "hello.js"}]]
+[[{ "files":["hello.js"], "output":"Hello, World!", "run": "node hello.js"}]]
 Свойство files содержит список файлов, отправляемых на проверку.
 Свойство output содержит ожидаемый вывод из программы.
-Свойство run содержит имя основного файла.
+Свойство run содержит команду запуска.
 
 \subsection{Запуск программы}
 Для запуска программы переходим в терминале в каталог
@@ -53,22 +53,16 @@
 #!/usr/bin/env node
 <<загрузка модулей>>
 <<константы>>
+<<функции>>
 ;(async function main()
 {
-	await checkArgs();
-	const psetName = process.argv[2];
-	const test = await getTask(psetName); 
-	await filesExists(test);
-	await testOutput(test);
+	<<проверка аргументов командной строки>>
+	<<закачивание описания>>
+	<<тестирование задания>>
 	if(local)
 		process.exit(0);
-	await createDir(test);
-	await cloneRepo(orgTest, psetName, test);
+	<<отправка на проверку>>
 })()
-<<проверка аргументов командной строки>>
-<<закачивание описания>>
-<<тестирование задания>>
-<<отправка на проверку>>
 @ 
 
 \section{Реализация}
@@ -77,7 +71,10 @@
 то выдаётся сообщение об ошибке.
 Если пользователь указал неверный адрес, то выдаётся сообщение об ошибке.
 <<проверка аргументов командной строки>>=
+await checkArgs();
+@
 
+<<реализация проверки аргументов>>=
 async function checkArgs() 
 {
 	if(process.argv.length < 3 || process.argv.length > 4)
@@ -89,8 +86,8 @@ async function checkArgs()
 		process.exit(1); 
 	}
 	const url2 = `https://raw.githubusercontent.com/${orgTest}/psets/${process.argv[2]}.json`;
-	const url_exists = await urlExists(url2);
-	if(!url_exists)
+	const url_exist = await urlExist(url2);
+	if(!url_exist)
 	{
 		console.log(chalk.red("Неверный адрес задания"));
 		process.exit(2);
@@ -113,7 +110,11 @@ async function checkArgs()
 
 \subsection{Закачивание описания}
 <<закачивание описания>>=
+	const psetName = process.argv[2];
+	const test = await getTask(psetName); 
+@
 
+<<реализация закачивания описания>>=
 async function getTask(psetName)
 {
 	try
@@ -137,16 +138,20 @@ async function getTask(psetName)
 
 \subsection{Тестирование программы}
 <<тестирование задания>>=
-<<проверка наличия файлов>>
-<<проверка правильности вывода из программы>>
+	<<проверка наличия файлов>>
+	<<проверка правильности вывода из программы>>
 @ 
 
 \subsubsection{Проверка наличия файлов}
 <<проверка наличия файлов>>=
+	await filesExists(test);
+@
+
+<<реализация проверки наличия файлов>>=
 async function filesExists(test)
 {
-	const files = await fsPromises.readdir(process.cwd());
-	for(file of test.files)
+	const files = await readdir(process.cwd());
+	for(const file of test.files)
 	{
 		if(files.includes(file)) 
 		{
@@ -166,6 +171,11 @@ async function filesExists(test)
 
 \subsubsection{Тест вывода из программы}
 <<проверка правильности вывода из программы>>=
+	await testOutput(test);
+@
+
+
+<<реализация проверки правильности вывода из программы>>=
 async function testOutput(test)
 {
 	const { stdout, stderr } = await exec(`${test.run}`);
@@ -195,44 +205,54 @@ async function testOutput(test)
 	}
 }
 @ 
+
+
 \subsection{Отправка на проверку}
 
 <<отправка на проверку>>=
-<<создание временного каталога>>
-<<клонирование каталога>>
+	<<создание временного каталога>>
+	<<клонирование каталога>>
 @ 
 
 \subsubsection{Создание временного каталога}
 
 <<создание временного каталога>>=
+	await createDir(test);
+@
+
+<<реализация создания временного каталога>>=
 async function createDir(test)
 {
-	await fsPromises.rmdir('/tmp/test', {recursive: true}); 
+	await rm('/tmp/test', {force: true, recursive: true}); 
 	console.log("Folder /tmp/test deleted");
-	await fsPromises.mkdir('/tmp/test', {recursive: true}); 
+	await mkdir('/tmp/test', {recursive: true}); 
 	console.log("Folder create dir");
 }
 @ 
 
 \subsubsection{Клонирование каталога}
 <<клонирование каталога>>=
+	await cloneRepo(orgTest, psetName, test);
+@
+
+<<реализация клонирования каталога>>=
 async function cloneRepo(org, psetName, test)
 {
 	try{
-	const readlineSync = require('readline-sync')
 	var username = readlineSync.question('Github username:');
-	const origin = `https://${username}@github.com/${org}/${username}`;
+	const origin =`git@github.com:${org}/${username}.git`;
+	// const origin = `https://${username}@github.com/${org}/${username}`;
 	const {stdout, stderr} = await exec(`git clone ${origin} -b main /tmp/test`);
 	console.log(stdout);
 	console.log(stderr);
 	await exec(`git checkout -b ${psetName}`, {cwd:'/tmp/test'})
 	for(let file of test.files)
 	{
-		await fsPromises.copyFile(path.join(process.cwd(), file), path.join('/tmp/test', file));
+		await copyFile(path.join(process.cwd(), file), path.join('/tmp/test', file));
 	} 
 	const fileName = `/tmp/test/${psetName.split('/')[1]}.md`;
 	console.log(fileName);
-	await fsPromises.writeFile(fileName,  resTest);
+	await writeFile(fileName,  resTest);
 	await exec(`git config user.name test && git config user.email test && git add . && git commit -m test`, {cwd: '/tmp/test'});
 	await exec(`git push -f ${origin} ${psetName}`, {cwd: '/tmp/test'}); 
 	}catch(error)
@@ -246,13 +266,15 @@ async function cloneRepo(org, psetName, test)
 \subsection{Загрузка модулей}
 
 <<загрузка модулей>>=
-const path = require('path');
-const chalk = require('chalk');
-const util = require('util');
-const urlExists = util.promisify(require('url-exists'));
-const fetch = require('node-fetch');
-const fsPromises = require('fs').promises;
-const exec = util.promisify(require('child_process').exec);
+import chalk from 'chalk';
+import urlExist from 'url-exists-nodejs';
+import fetch from 'node-fetch';
+import {readdir, rm, mkdir, copyFile, writeFile } from 'node:fs/promises';
+import readlineSync from 'readline-sync';
+import * as child from 'node:child_process';
+import * as util from 'node:util';
+const exec = util.promisify(child.exec);
+import * as path from 'node:path';
 @ 
 
 
@@ -279,4 +301,15 @@ export PATH="$HOME/npm/bin:PATH"
 <<установка>>=
 npm --global install check204
 @ 
+
+
+\subsection{Функции}
+<<функции>>=
+<<реализация проверки аргументов>>
+<<реализация закачивания описания>>
+<<реализация проверки наличия файлов>>
+<<реализация проверки правильности вывода из программы>>
+<<реализация создания временного каталога>>
+<<реализация клонирования каталога>>
+@
 
